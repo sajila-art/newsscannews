@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-serif: var(--font-malayalam), var(--font-serif), 'Gayathri', 'Manjari', Georgia, serif;
+    --font-sans: var(--font-malayalam), var(--font-sans), 'Inter', 'Noto Sans Malayalam', sans-serif;
+  }
+
+  body {
+    @apply bg-paper-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 antialiased font-sans transition-colors duration-200;
+    line-height: 1.65;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    line-height: 1.35;
+  }
+}
+
+/* Custom newspaper styling */
+.newspaper-dropcap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  line-height: 0.85;
+  padding-top: 4px;
+  padding-right: 8px;
+  padding-bottom: 2px;
+  font-weight: 900;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Print styles for clippings */
+@media print {
+  header, footer, nav, aside, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
