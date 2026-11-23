@@ -176,6 +176,9 @@ class Todays_audio_model extends CI_Model {
             'duration_label' => $compiled['duration_label'],
             'status' => 'active'
         );
+        if ($this->db->field_exists('audio', $this->table)) {
+            $record['audio'] = '';
+        }
 
         if ($existing) {
             if (isset($existing['id'])) {
@@ -183,7 +186,7 @@ class Todays_audio_model extends CI_Model {
                 $record['id'] = (int) $existing['id'];
             } else {
                 $this->db->where('audio_date', $today)->update($this->table, $record);
-                $record['id'] = 1;
+                $record['id'] = isset($existing['audio_id']) ? (int) $existing['audio_id'] : 1;
             }
         } else {
             $this->db->insert($this->table, $record);

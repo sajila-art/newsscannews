@@ -110,11 +110,15 @@ class Login extends CI_Controller {
     
         // Record audit log if table exists
         if ($this->db->table_exists('audit_logs')) {
+            $audit_user_id = (int) $user->id;
+            if ($this->db->table_exists('users') && $this->db->where('id', $audit_user_id)->count_all_results('users') === 0) {
+                $audit_user_id = null;
+            }
             $data = array(
-                'user_id' => $user->id,
+                'user_id' => $audit_user_id,
                 'action' => 'login',
                 'entity_type' => 'admin',
-                'entity_id' => $user->id,
+                'entity_id' => ctype_digit((string) $user->id) ? (int) $user->id : null,
                 'ip_address' => $this->input->ip_address()
             );
             $this->db->insert('audit_logs', $data);

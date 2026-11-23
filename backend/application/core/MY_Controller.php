@@ -20,12 +20,29 @@ class MY_Controller extends CI_Controller {
 
     protected function audit($action, $entity_type, $entity_id = null, $details = '') {
         if ($this->db->table_exists('audit_logs')) {
+            $user_id = ($this->user && isset($this->user['id'])) ? (int) $this->user['id'] : null;
+            if ($user_id !== null && $this->db->table_exists('users')) {
+                if ($this->db->where('id', $user_id)->count_all_results('users') === 0) {
+                    $user_id = null;
+                }
+            }
+
+            $safe_entity_id = null;
+            $details_str = (string) $details;
+            if ($entity_id !== null && $entity_id !== '') {
+                if (ctype_digit((string) $entity_id)) {
+                    $safe_entity_id = (int) $entity_id;
+                } else {
+                    $details_str = trim('ref=' . $entity_id . ($details_str !== '' ? ' | ' . $details_str : ''));
+                }
+            }
+
             $this->db->insert('audit_logs', array(
-                'user_id' => $this->user ? (int)$this->user['id'] : null,
+                'user_id' => $user_id,
                 'action' => $action,
                 'entity_type' => $entity_type,
-                'entity_id' => $entity_id,
-                'details' => substr((string)$details, 0, 4000),
+                'entity_id' => $safe_entity_id,
+                'details' => substr($details_str, 0, 4000),
                 'ip_address' => $this->input->ip_address()
             ));
         }
